@@ -36,6 +36,9 @@ ${R3_HUB_INTF}    GigabitEthernet4
 # One multipoint tunnel faces every peer, so there is a single tunnel interface
 # on every router rather than one per spoke.
 ${DMVPN_TUNNEL}   Tunnel0
+${TUNNEL_MTU}     1472
+${NHRP_AUTH}      LabNhrp
+${NHRP_HOLDTIME}  300
 ${NHRP_NETWORK_ID}    100
 
 # All three share one tunnel subnet, so a peer has one address, not a pair per

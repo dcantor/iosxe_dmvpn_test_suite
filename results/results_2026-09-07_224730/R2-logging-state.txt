@@ -1,0 +1,5 @@
+Syslog logging: enabled (0 messages dropped, 3 messages rate-limited, 0 flushes, 0 overruns, xml disabled, filtering disabled)
+    Trap logging: level informational, 977 message lines logged
+        Logging to 192.168.99.10  (MGMT) (udp port 514, audit disabled,
+000160: *Sep  8 01:35:48.345 UTC: %SYS-6-LOGGINGHOST_STARTSTOP: Logging to host 192.168.99.10 port 514 (MGMT) stopped - CLI initiated
+000162: *Sep  8 01:35:48.541 UTC: %SYS-6-LOGGINGHOST_STARTSTOP: Logging to host 192.168.99.10 port 514 (MGMT) restored CLI initiated
