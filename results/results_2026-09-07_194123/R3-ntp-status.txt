@@ -1,0 +1,8 @@
+Clock is synchronized, stratum 4, reference is 192.168.99.10  
+nominal freq is 250.0000 Hz, actual freq is 250.0021 Hz, precision is 2**10
+ntp uptime is 410100 (1/100 of seconds), resolution is 4000
+reference time is EE49C439.2A7EFA50 (23:16:09.166 UTC Mon Sep 7 2026)
+clock offset is 0.5161 msec, root delay is 47.91 msec
+root dispersion is 13.66 msec, peer dispersion is 4.91 msec
+loopfilter state is 'CTRL' (Normal Controlled Loop), drift is -0.000008467 s/s
+system poll interval is 128, last update was 406 sec ago.

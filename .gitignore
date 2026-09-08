@@ -1,0 +1,18 @@
+# images/ and .venv/ are symlinks into the lab this one mirrors. Committing a
+# symlink would leave a clone pointing at a path that does not exist there, so
+# both are excluded: run ./setup.sh for the virtualenv and supply the base
+# images as described in README.md. The Cisco qcow2 is licensed in any case.
+images
+.venv
+
+# Per-VM overlay disks and generated ISOs, rebuilt from images/ by start-lab.sh.
+run/
+
+# Every archived run except one kept as a reference result: the most recent
+# *complete* run, which is not always the newest directory.
+results/*
+!results/results_2026-09-07_194123/
+
+dist/
+__pycache__/
+*.pyc
