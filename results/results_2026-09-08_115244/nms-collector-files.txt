@@ -1,0 +1,6 @@
+total 8724
+-rw-r--r-- 1 syslog syslog  443619 Sep  8 15:27 192.168.99.1.log
+-rw-r--r-- 1 syslog syslog  545076 Sep  8 15:27 192.168.99.2.log
+-rw-r--r-- 1 syslog syslog  379510 Sep  8 15:27 192.168.99.3.log
+-rw-r--r-- 1 root   root   2187883 Sep  8 15:28 snmptrapd.log
+-rw-r--r-- 1 root   root   5344193 Sep  8 15:28 traps-raw.log

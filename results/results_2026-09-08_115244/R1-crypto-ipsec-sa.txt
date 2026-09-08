@@ -1,0 +1,92 @@
+interface: Tunnel0
+    Crypto map tag: Tunnel0-head-0, local addr 100.64.0.1
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (100.64.0.1/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (100.64.0.3/255.255.255.255/47/0)
+   current_peer 100.64.0.3 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 12438, #pkts encrypt: 12438, #pkts digest: 12438
+    #pkts decaps: 12460, #pkts decrypt: 12460, #pkts verify: 12460
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 100.64.0.1, remote crypto endpt.: 100.64.0.3
+     plaintext mtu 1458, path mtu 1500, ip mtu 1500, ip mtu idb GigabitEthernet2
+     current outbound spi: 0xB2ECBA0C(3001858572)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0xB6B7BC0F(3065494543)
+        transform: esp-256-aes esp-sha256-hmac ,
+        in use settings ={Transport, }
+        conn id: 2305, flow_id: CSR:305, sibling_flags FFFFFFFF80000008, crypto map: Tunnel0-head-0, initiator : False
+         sa timing: remaining key lifetime (k/sec): (4606730/1500)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0xB2ECBA0C(3001858572)
+        transform: esp-256-aes esp-sha256-hmac ,
+        in use settings ={Transport, }
+        conn id: 2306, flow_id: CSR:306, sibling_flags FFFFFFFF80000008, crypto map: Tunnel0-head-0, initiator : False
+         sa timing: remaining key lifetime (k/sec): (4607378/1500)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     outbound ah sas:
+
+     outbound pcp sas:
+
+   protected vrf: (none)
+   local  ident (addr/mask/prot/port): (100.64.0.1/255.255.255.255/47/0)
+   remote ident (addr/mask/prot/port): (100.64.0.2/255.255.255.255/47/0)
+   current_peer 100.64.0.2 port 500
+     PERMIT, flags={origin_is_acl,}
+    #pkts encaps: 12340, #pkts encrypt: 12340, #pkts digest: 12340
+    #pkts decaps: 12340, #pkts decrypt: 12340, #pkts verify: 12340
+    #pkts compressed: 0, #pkts decompressed: 0
+    #pkts not compressed: 0, #pkts compr. failed: 0
+    #pkts not decompressed: 0, #pkts decompress failed: 0
+    #send errors 0, #recv errors 0
+
+     local crypto endpt.: 100.64.0.1, remote crypto endpt.: 100.64.0.2
+     plaintext mtu 1458, path mtu 1500, ip mtu 1500, ip mtu idb GigabitEthernet2
+     current outbound spi: 0x7A6AAC8F(2053811343)
+     PFS (Y/N): N, DH group: none
+
+     inbound esp sas:
+      spi: 0x804BEB84(2152459140)
+        transform: esp-256-aes esp-sha256-hmac ,
+        in use settings ={Transport, }
+        conn id: 2307, flow_id: CSR:307, sibling_flags FFFFFFFF80000008, crypto map: Tunnel0-head-0, initiator : False
+         sa timing: remaining key lifetime (k/sec): (4606742/1526)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     inbound ah sas:
+
+     inbound pcp sas:
+
+     outbound esp sas:
+      spi: 0x7A6AAC8F(2053811343)
+        transform: esp-256-aes esp-sha256-hmac ,
+        in use settings ={Transport, }
+        conn id: 2308, flow_id: CSR:308, sibling_flags FFFFFFFF80000008, crypto map: Tunnel0-head-0, initiator : False
+         sa timing: remaining key lifetime (k/sec): (4607382/1526)
+        IV size: 16 bytes
+        replay detection support: Y
+        Status: ACTIVE(ACTIVE)
+
+     outbound ah sas:
+
+     outbound pcp sas:

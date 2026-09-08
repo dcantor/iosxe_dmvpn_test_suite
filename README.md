@@ -687,3 +687,17 @@ environment should shake out.
 * The shipped image is pristine: the inner lab is stopped, `run/` and `results/`
   are empty and the filesystem has been trimmed, so the first `start-lab.sh` on a
   new host takes the factory-fresh path rather than finding existing overlays.
+
+### Reference run
+
+`results/` carries the latest full run. `output.xml` is stored gzipped: at 224
+tests the raw file is 104 MB, past GitHub's 100 MB hard limit, so an
+uncompressed archive cannot be pushed at all. To use it with Robot's tooling:
+
+```
+gunzip -k results/results_*/output.xml.gz
+rebot --outputdir /tmp results/results_*/output.xml
+```
+
+`log.html`, `report.html` and `test-evidence.pdf` are generated from it and are
+tracked uncompressed, so nothing human-facing needs unpacking.
