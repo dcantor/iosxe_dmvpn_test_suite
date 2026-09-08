@@ -21,3 +21,12 @@ __pycache__/
 docs/dmvpn-lab-overview.pptx
 docs/dmvpn-lab-overview.pdf
 tools/deck/
+
+# Terraform: state describes one particular lab instance, and the generated
+# tfvars carries the device password.
+terraform/.terraform/
+terraform/.terraform.lock.hcl
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terraform/terraform.auto.tfvars.json
+terraform/*.plan
