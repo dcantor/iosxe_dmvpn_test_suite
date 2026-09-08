@@ -1,0 +1,15 @@
+BGP router identifier 172.16.2.1, local AS number 65002
+BGP table version is 46, main routing table version 46
+9 network entries using 2232 bytes of memory
+9 path entries using 1224 bytes of memory
+7/7 BGP path/bestpath attribute entries using 2072 bytes of memory
+2 BGP AS-PATH entries using 64 bytes of memory
+6 BGP community entries using 144 bytes of memory
+0 BGP route-map cache entries using 0 bytes of memory
+0 BGP filter-list cache entries using 0 bytes of memory
+BGP using 5736 total bytes of memory
+BGP activity 170/161 prefixes, 180/171 paths, scan interval 60 secs
+31 networks peaked at 02:28:40 Sep 8 2026 UTC (03:47:32.763 ago)
+
+Neighbor        V           AS MsgRcvd MsgSent   TblVer  InQ OutQ Up/Down  State/PfxRcd
+172.20.0.1      4        65001    1346    1339       46    0    0 03:32:11        6
