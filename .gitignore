@@ -16,3 +16,8 @@ results/*
 dist/
 __pycache__/
 *.pyc
+
+# The overview deck and its generator are kept locally, not tracked.
+docs/dmvpn-lab-overview.pptx
+docs/dmvpn-lab-overview.pdf
+tools/deck/
