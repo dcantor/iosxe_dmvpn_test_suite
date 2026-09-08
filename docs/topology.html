@@ -1,4 +1,4 @@
-<title>C8000V IPsec Testbed</title>
+<title>C8000V DMVPN Testbed</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=JetBrains+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
@@ -200,21 +200,21 @@
 
   <header>
     <p class="eyebrow">LAB REFERENCE</p>
-    <h1>C8000V IPsec Testbed</h1>
-    <p class="lede">A hub-and-spoke fabric of three Catalyst 8000V routers on one Linux host, with an IKEv2/IPsec tunnel from the hub to each spoke carrying eBGP, the protected loopbacks, and traffic between three Linux hosts that run no crypto of their own. Management &#8212; NTP, syslog, SNMP and TACACS+ authentication &#8212; runs entirely on a separate out-of-band network in its own VRF.</p>
+    <h1>C8000V DMVPN Testbed</h1>
+    <p class="lede">A DMVPN Phase 3 fabric of three Catalyst 8000V routers on one Linux host. One multipoint tunnel per router over a shared WAN, with NHRP supplying the destinations the configuration never names &#8212; so spokes build direct tunnels to each other on demand. Management runs entirely on a separate out-of-band network in its own VRF.</p>
 
     <dl class="facts">
       <div class="fact"><dt>HOST</dt><dd>Ubuntu 26.04 &#183; QEMU 10.2 / KVM<br>3 routers + 3 hosts + NMS</dd></div>
       <div class="fact"><dt>IMAGE</dt><dd>c8000v-universalk9<br>_16G_serial.17.15.06</dd></div>
-      <div class="fact"><dt>TOPOLOGY</dt><dd>hub-and-spoke<br>AS 65001 / 65002 / 65003</dd></div>
-      <div class="fact"><dt>COVERAGE</dt><dd>204 tests &#183; 22 suites<br>Robot Framework</dd></div>
+      <div class="fact"><dt>TOPOLOGY</dt><dd>DMVPN Phase 3<br>AS 65001 / 65002 / 65003</dd></div>
+      <div class="fact"><dt>COVERAGE</dt><dd>208 tests &#183; 22 suites<br>Robot Framework</dd></div>
       <div class="fact"><dt>THROUGHPUT</dt><dd>16.5 Mbps measured<br>20 Mbps licence cap</dd></div>
     </dl>
   </header>
 
   <figure>
     <div class="canvas">
-      <svg viewBox="0 0 1200 840" role="img" aria-label="Hub-and-spoke topology of the three-router Catalyst 8000V testbed on one Linux host. R1 is the hub, with a separate IPsec tunnel to each spoke: Tunnel0 out GigabitEthernet2 to spoke R2 over cleartext link 10.10.10.0/30, and Tunnel1 out GigabitEthernet4 to spoke R3 over 10.10.20.0/30. Both tunnels run IKEv2 with ESP-AES-256 and SHA256. Each router has a Cirros Linux host on its GigabitEthernet3 LAN: h1 at 192.168.10.10 behind the hub, h2 at 192.168.20.10 behind R2, and h3 at 192.168.30.10 behind R3. The spokes have no direct link to each other, so h2 to h3 traffic is decrypted and re-encrypted at the hub and is protected on both legs. eBGP runs inside the tunnels between AS 65001 at the hub and AS 65002 and AS 65003 at the spokes; the hub re-advertises between spokes, which is what makes spoke-to-spoke reachability possible. Every BGP session is MD5 authenticated, tracked by BFD on the tunnel it runs over, and filtered outbound by a per-peer prefix-list wrapped in a route-map, so each router advertises only the prefixes it owns plus, at the hub, the far spoke's Each router also source-NATs its own host into a shared 10.30.0.0/16 domain: h1 is seen as 10.30.1.10, h2 as 10.30.2.10 and h3 as 10.30.3.10 Each host carries three addresses: the .10 address has a static one-to-one mapping, while .11 and .12 are translated from a per-site dynamic pool spanning .100 to .110 Separately from all of that, every router and the NMS also attach to a flat out-of-band management network, 192.168.99.0/24, on an interface held in a VRF called MGMT: the hub at 192.168.99.1 on GigabitEthernet5 and the spokes at .2 and .3 on GigabitEthernet4. The NMS is at 192.168.99.10 and carries the whole management plane on it. It polls all three routers over SNMPv3 authPriv with net-snmp, receives their syslog into rsyslog on port 514 and their SNMPv3 traps into snmptrapd on port 162, with the same traps captured raw on port 1162 so the tests can check the wire format, and serves them time with chrony, itself synchronised to pool.ntp.org through its own NAT interface. None of that management traffic crosses the IPsec tunnels, so a spoke stays manageable with its data path down.">
+      <svg viewBox="0 0 1200 840" role="img" aria-label="DMVPN Phase 3 topology of the three-router Catalyst 8000V testbed on one Linux host. All three routers attach to a single shared WAN segment, 100.64.0.0/24, on GigabitEthernet2: the hub R1 at 100.64.0.1 and the spokes R2 and R3 at .2 and .3. That shared segment is what lets a spoke reach the other spoke's underlay address, which a pair of point-to-point links to the hub could not. On top of it every router runs one multipoint GRE tunnel, Tunnel0, on 172.20.0.0/24, with no tunnel destination configured anywhere: NHRP supplies it. The spokes register their underlay addresses with the hub, which acts as next hop server. The tunnel is protected by IKEv2 with ESP-AES-256 in transport mode, because GRE already provides an outer header. This is Phase 3: the hub sends NHRP redirects and the spokes install shortcuts, so the first packet between two spokes goes through the hub and subsequent traffic takes a direct spoke-to-spoke tunnel that the configuration never named, protected by the same profile. Each router has a Cirros Linux host on its GigabitEthernet3 LAN: h1 at 192.168.10.10 behind the hub, h2 at 192.168.20.10 behind R2, h3 at 192.168.30.10 behind R3. eBGP runs inside the tunnel between AS 65001 at the hub and AS 65002 and AS 65003 at the spokes, with next-hop-unchanged on the hub so a spoke learns the far spoke's tunnel address rather than the hub's -- which is what gives NHRP something to resolve. Sessions are MD5 authenticated and filtered outbound by per-peer prefix-lists in route-maps. Each router also source-NATs its own host into a shared 10.30.0.0/16 domain. Separately, every router and the NMS attach to a flat out-of-band management network, 192.168.99.0/24, on GigabitEthernet4 held in a VRF called MGMT. The NMS at 192.168.99.10 carries the whole management plane: SNMPv3 polling, syslog, SNMP traps, chrony time and TACACS+ authentication. None of it crosses the tunnel, so a spoke stays manageable with its data path down.">
         <defs>
           <marker id="ah-enc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
             <path d="M0,0 L10,5 L0,10 z" class="ah-enc"></path></marker>
@@ -252,8 +252,8 @@
         <text class="m11r" x="94" y="232">10.0.2.15</text>
         <text class="tag" x="274" y="232" text-anchor="end">MGMT &#183; NTP</text>
         <text class="m11" x="56" y="260">Tu0</text>
-        <text class="m11r" x="94" y="260">192.168.100.2</text>
-        <text class="tag-enc" x="274" y="260" text-anchor="end">ESP</text>
+        <text class="m11r" x="94" y="260">172.20.0.2</text>
+        <text class="tag-enc" x="274" y="260" text-anchor="end">mGRE</text>
         <text class="m11" x="56" y="288">Lo0</text>
         <text class="m11r" x="94" y="288">172.16.2.1</text>
         <text class="tag-enc" x="274" y="288" text-anchor="end">PROT</text>
@@ -261,8 +261,8 @@
         <text class="m11r" x="94" y="316">10.20.2.1</text>
         <text class="tag-enc" x="274" y="316" text-anchor="end">BGP</text>
         <text class="m11" x="56" y="344">Gi2</text>
-        <text class="m11r" x="94" y="344">10.10.10.2</text>
-        <text class="tag-clear" x="274" y="344" text-anchor="end">LINK</text>
+        <text class="m11r" x="94" y="344">100.64.0.2</text>
+        <text class="tag-clear" x="274" y="344" text-anchor="end">WAN</text>
         <text class="m11" x="56" y="372">Gi3</text>
         <text class="m11r" x="94" y="372">192.168.20.1</text>
         <text class="tag" x="274" y="372" text-anchor="end">LAN</text>
@@ -275,29 +275,24 @@
         <text class="m11r" x="524" y="232">10.0.2.15</text>
         <text class="tag" x="704" y="232" text-anchor="end">MGMT &#183; NTP</text>
         <text class="m11" x="486" y="260">Tu0</text>
-        <text class="m11r" x="524" y="260">192.168.100.1</text>
-        <text class="tag-enc" x="704" y="260" text-anchor="end">ESP</text>
-        <text class="m11" x="486" y="288">Tu1</text>
-        <text class="m11r" x="524" y="288">192.168.101.1</text>
-        <text class="tag-enc" x="704" y="288" text-anchor="end">ESP</text>
-        <text class="m11" x="486" y="316">Lo0</text>
-        <text class="m11r" x="524" y="316">172.16.1.1</text>
-        <text class="tag-enc" x="704" y="316" text-anchor="end">PROT</text>
-        <text class="m11" x="486" y="344">Lo1</text>
-        <text class="m11r" x="524" y="344">10.20.1.1</text>
-        <text class="tag-enc" x="704" y="344" text-anchor="end">BGP</text>
-        <text class="m11" x="486" y="372">Gi2</text>
-        <text class="m11r" x="524" y="372">10.10.10.1</text>
-        <text class="tag-clear" x="704" y="372" text-anchor="end">LINK</text>
-        <text class="m11" x="486" y="400">Gi3</text>
-        <text class="m11r" x="524" y="400">192.168.10.1</text>
-        <text class="tag" x="704" y="400" text-anchor="end">LAN</text>
+        <text class="m11r" x="524" y="260">172.20.0.1</text>
+        <text class="tag-enc" x="704" y="260" text-anchor="end">mGRE &#183; NHS</text>
+        <text class="m11" x="486" y="288">Gi2</text>
+        <text class="m11r" x="524" y="288">100.64.0.1</text>
+        <text class="tag-clear" x="704" y="288" text-anchor="end">WAN</text>
+        <text class="m11" x="486" y="316">Lo1</text>
+        <text class="m11r" x="524" y="316">10.20.1.1</text>
+        <text class="tag-enc" x="704" y="316" text-anchor="end">BGP</text>
+        <text class="m11" x="486" y="344">Gi3</text>
+        <text class="m11r" x="524" y="344">192.168.10.1</text>
+        <text class="tag" x="704" y="344" text-anchor="end">LAN</text>
+        <text class="m11" x="486" y="400">&#160;</text>
+        <text class="m11" x="486" y="372">Lo0</text>
+        <text class="m11r" x="524" y="372">172.16.1.1</text>
+        <text class="tag-enc" x="704" y="372" text-anchor="end">PROT</text>
         <text class="m11" x="486" y="428">Gi4</text>
-        <text class="m11r" x="524" y="428">10.10.20.1</text>
-        <text class="tag-clear" x="704" y="428" text-anchor="end">LINK</text>
-        <text class="m11" x="486" y="456">Gi5</text>
-        <text class="m11r" x="524" y="456">192.168.99.1</text>
-        <text class="tag" x="704" y="456" text-anchor="end">VRF MGMT</text>
+        <text class="m11r" x="524" y="428">192.168.99.1</text>
+        <text class="tag" x="704" y="428" text-anchor="end">VRF MGMT</text>
 
         <rect class="card" x="900" y="150" width="250" height="330" rx="10"></rect>
         <text class="rtr-name" x="916" y="180">c8000v-r3</text>
@@ -307,8 +302,8 @@
         <text class="m11r" x="954" y="232">10.0.2.15</text>
         <text class="tag" x="1134" y="232" text-anchor="end">MGMT &#183; NTP</text>
         <text class="m11" x="916" y="260">Tu0</text>
-        <text class="m11r" x="954" y="260">192.168.101.2</text>
-        <text class="tag-enc" x="1134" y="260" text-anchor="end">ESP</text>
+        <text class="m11r" x="954" y="260">172.20.0.3</text>
+        <text class="tag-enc" x="1134" y="260" text-anchor="end">mGRE</text>
         <text class="m11" x="916" y="288">Lo0</text>
         <text class="m11r" x="954" y="288">172.16.3.1</text>
         <text class="tag-enc" x="1134" y="288" text-anchor="end">PROT</text>
@@ -316,8 +311,8 @@
         <text class="m11r" x="954" y="316">10.20.3.1</text>
         <text class="tag-enc" x="1134" y="316" text-anchor="end">BGP</text>
         <text class="m11" x="916" y="344">Gi2</text>
-        <text class="m11r" x="954" y="344">10.10.20.2</text>
-        <text class="tag-clear" x="1134" y="344" text-anchor="end">LINK</text>
+        <text class="m11r" x="954" y="344">100.64.0.3</text>
+        <text class="tag-clear" x="1134" y="344" text-anchor="end">WAN</text>
         <text class="m11" x="916" y="400">Gi4</text>
         <text class="m11r" x="954" y="400">192.168.99.3</text>
         <text class="tag" x="1134" y="400" text-anchor="end">VRF MGMT</text>
@@ -325,27 +320,27 @@
         <text class="m11r" x="954" y="372">192.168.30.1</text>
         <text class="tag" x="1134" y="372" text-anchor="end">LAN</text>
 
-        <text class="m10-enc" x="380.0" y="248" text-anchor="middle">Tu0 &#183; 192.168.100.0/30</text>
+        <text class="m10-enc" x="380.0" y="248" text-anchor="middle">Tu0 &#183; mGRE 172.20.0.0/24</text>
         <line class="wire-esp" x1="294" y1="266" x2="466" y2="266"
               marker-start="url(#ah-enc)" marker-end="url(#ah-enc)"></line>
-        <text class="m10-enc" x="380.0" y="286" text-anchor="middle">IKEv2 &#183; ESP-AES-256</text>
+        <text class="m10-enc" x="380.0" y="286" text-anchor="middle">IKEv2 &#183; ESP transport</text>
         <line class="wire-encap" x1="346.0" y1="304" x2="346.0" y2="344" marker-end="url(#ah-muted)"></line>
         <text class="m9" x="354.0" y="328">encapsulated</text>
         <line class="wire-clear" x1="294" y1="360" x2="466" y2="360"
               marker-start="url(#ah-clear)" marker-end="url(#ah-clear)"></line>
         <text class="m10-clear" x="380.0" y="378" text-anchor="middle">R1 Gi2 &#8596; R2 Gi2</text>
-        <text class="m10-clear" x="380.0" y="392" text-anchor="middle">10.10.10.0/30 cleartext</text>
+        <text class="m10-clear" x="380.0" y="392" text-anchor="middle">100.64.0.0/24 shared WAN</text>
 
-        <text class="m10-enc" x="810.0" y="248" text-anchor="middle">Tu1 &#183; 192.168.101.0/30</text>
+        <text class="m10-enc" x="810.0" y="248" text-anchor="middle">Tu0 &#183; mGRE 172.20.0.0/24</text>
         <line class="wire-esp" x1="724" y1="266" x2="896" y2="266"
               marker-start="url(#ah-enc)" marker-end="url(#ah-enc)"></line>
-        <text class="m10-enc" x="810.0" y="286" text-anchor="middle">IKEv2 &#183; ESP-AES-256</text>
+        <text class="m10-enc" x="810.0" y="286" text-anchor="middle">IKEv2 &#183; ESP transport</text>
         <line class="wire-encap" x1="776.0" y1="304" x2="776.0" y2="344" marker-end="url(#ah-muted)"></line>
         <text class="m9" x="784.0" y="328">encapsulated</text>
         <line class="wire-clear" x1="724" y1="360" x2="896" y2="360"
               marker-start="url(#ah-clear)" marker-end="url(#ah-clear)"></line>
-        <text class="m10-clear" x="810.0" y="378" text-anchor="middle">R1 Gi4 &#8596; R3 Gi2</text>
-        <text class="m10-clear" x="810.0" y="392" text-anchor="middle">10.10.20.0/30 cleartext</text>
+        <text class="m10-clear" x="810.0" y="378" text-anchor="middle">R1 Gi2 &#8596; R3 Gi2</text>
+        <text class="m10-clear" x="810.0" y="392" text-anchor="middle">100.64.0.0/24 shared WAN</text>
 
         <line class="wire-mgmt" x1="165" y1="510" x2="165" y2="542" marker-end="url(#ah-muted)"></line>
         <text class="m9" x="173" y="530">eth1</text>
@@ -359,6 +354,13 @@
         <line class="wire-mgmt" x1="1025" y1="510" x2="1025" y2="542" marker-end="url(#ah-muted)"></line>
         <text class="m9" x="1033" y="530">eth1</text>
 
+
+        <line class="wire-esp" x1="300" y1="496" x2="556" y2="496"
+              marker-start="url(#ah-enc)" stroke-dasharray="6 4"></line>
+        <line class="wire-esp" x1="644" y1="496" x2="900" y2="496"
+              marker-end="url(#ah-enc)" stroke-dasharray="6 4"></line>
+        <text class="m10-enc" x="600" y="493" text-anchor="middle">NHRP shortcut</text>
+        <text class="m9" x="600" y="506" text-anchor="middle">formed on demand, bypasses the hub</text>
         <rect class="card" x="65" y="546" width="200" height="118" rx="10"></rect>
         <text class="rtr-name" x="81" y="574">h2</text>
         <rect class="chip" x="111" y="560" width="54" height="18" rx="9"></rect>
@@ -401,7 +403,7 @@
         <text class="m10-clear" x="941" y="643">pool &#215;30 &#8594; 10.30.3.100-.129</text>
         <text class="tag" x="1109" y="574" text-anchor="end">NO CRYPTO</text>
 
-        <text class="m10-enc" x="600" y="782" text-anchor="middle">h2 &#8596; h3 has no direct link: it is decrypted and re-encrypted at the hub, so it is protected on both legs</text>
+        <text class="m10-enc" x="600" y="782" text-anchor="middle">h2 &#8596; h3 takes a direct spoke-to-spoke tunnel: the hub is on the path only for the first packet</text>
         <text class="m10" x="600" y="797" text-anchor="middle">bulk transfers sustain 16.5 Mbps host-to-host, against a 20 Mbps licence cap</text>
         <line class="wire-mgmt" x1="52" y1="480" x2="52" y2="740"></line>
         <line class="wire-mgmt" x1="482" y1="480" x2="482" y2="740"></line>
@@ -444,8 +446,8 @@
       <p>Only traffic aimed at <code>10.30.0.0/16</code> is rewritten. Without that scoping both ends would rewrite their source on replies, and a ping would return from an address the sender never contacted. The direct LAN path therefore stays untranslated, and a test holds that line.</p>
     </div>
     <div class="note">
-      <h3>The hosts know nothing about IPsec</h3>
-      <p>Each cirros host holds one address and two routes. Their traffic resolves out a tunnel and the VTI encrypts it; the encryption is entirely the routers' business.</p>
+      <h3>The overlay reorganises itself</h3>
+      <p>Nothing configures a spoke with another spoke's address. The first packet between two of them goes through the hub, which answers with an NHRP redirect; the spokes resolve each other, install a shortcut, and the traffic moves to a direct tunnel protected by the same IPsec profile. The tests do not take that on trust: they clear the NHRP cache, prove the direct entry is absent, send traffic, and then require a traceroute between spokes to arrive in a single hop.</p>
     </div>
     <div class="note">
       <h3>Throughput is licence-capped</h3>
@@ -484,12 +486,12 @@
       <p>The out-of-band network has no route to the internet, which is the point of it, so the routers cannot reach <code>pool.ntp.org</code> across it. Instead the NMS synchronises upstream through its own NAT interface and serves the management network with chrony: the public pool is still where time comes from, one stratum further away. That makes the server's own health load-bearing &#8212; chrony is configured <code>local stratum 10</code>, so it keeps serving whether or not it has an upstream, and without a test for that the whole lab could agree precisely on time that came from nowhere. Worth knowing too: IOS withholds its <em>synchronised</em> flag until the loopfilter finishes measuring drift, about 17 minutes, long after the offset is within milliseconds.</p>
     </div>
     <div class="note">
-      <h3>Start order matters, on the router links</h3>
-      <p>The inter-router links are QEMU socket netdevs with one end listening, and the hub listens for both spokes &#8212; so the hub starts first. The LANs are different: each is a multicast segment, so it holds any number of machines and they can join in any order. That is what makes room for a second machine on the hub LAN.</p>
+      <h3>The underlay had to change</h3>
+      <p>The static-VTI lab this mirrors gave each spoke a private /30 to the hub and asserted the spokes had <em>no</em> path to each other. DMVPN inverts that: a spoke can only build a direct tunnel if it can reach the far spoke's underlay address. So the two point-to-point links became one shared segment &#8212; which is what DMVPN models anyway, every site attached to a common provider cloud. A side effect worth having: with no listening sockets left, the routers can be started in any order.</p>
     </div>
     <div class="note">
-      <h3>Crypto needs a licence, and a reload</h3>
-      <p>At the default licence level the <code>crypto</code> CLI does not exist. Day0 sets <code>network-premier</code> with the <code>dna-premier</code> addon, which activates on reload &#8212; and a router that reboots without it silently drops its crypto config.</p>
+      <h3>Transport mode buys back 34 bytes</h3>
+      <p>GRE already supplies an outer header, so IPsec runs in transport mode rather than adding a second one. The tunnel MTU is 1472 against the VTI lab's 1438: 28 bytes of overhead &#8212; 20 of outer IP, 4 of GRE, 4 for the tunnel key &#8212; instead of 62. Worth knowing too: the first packet across a new spoke-to-spoke path is consumed establishing it, so a cold measurement reports 80 percent and says nothing about the MTU.</p>
     </div>
   </section>
 
@@ -514,7 +516,7 @@
   </div>
 
   <footer>
-    Brought up from cold with <code>./start-lab.sh</code> &#8212; day0 bootstrap, licence reload, IPsec, eBGP, then the hosts. Validated by <code>./run-tests.sh</code>: 204 tests across 22 suites, including sustained throughput, 10 static NAT mappings and a 30-address dynamic pool per site, MD5-authenticated and BFD-tracked eBGP with community tagging and per-peer inbound validation, NTP against the public pool, syslog and SNMPv3 traps delivered to collectors on nms, which also polls every router over SNMPv3. Every run is archived under <code>results/results_&lt;date&gt;_&lt;time&gt;/</code>.
+    Brought up from cold with <code>./start-lab.sh</code> &#8212; day0 bootstrap, licence reload, IPsec, eBGP, then the hosts. Validated by <code>./run-tests.sh</code>: 208 tests across 22 suites, including sustained throughput, 10 static NAT mappings and a 30-address dynamic pool per site, MD5-authenticated and BFD-tracked eBGP with community tagging and per-peer inbound validation, NTP against the public pool, syslog and SNMPv3 traps delivered to collectors on nms, which also polls every router over SNMPv3. Every run is archived under <code>results/results_&lt;date&gt;_&lt;time&gt;/</code>.
   </footer>
 
 </div>
