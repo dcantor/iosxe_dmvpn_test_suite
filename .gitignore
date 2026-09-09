@@ -30,3 +30,8 @@ terraform/terraform.tfstate
 terraform/terraform.tfstate.backup
 terraform/terraform.auto.tfvars.json
 terraform/*.plan
+terraform-nac/.terraform/
+terraform-nac/.terraform.lock.hcl
+terraform-nac/terraform.tfstate
+terraform-nac/terraform.tfstate.backup
+terraform-nac/iosxe.nac.yaml

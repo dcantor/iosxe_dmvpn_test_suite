@@ -1,0 +1,10 @@
+IPv4 Crypto IKEv2  SA 
+
+Tunnel-id Local                 Remote                fvrf/ivrf            Status 
+1         100.64.0.2/500        100.64.0.1/500        none/none            READY  
+      Encr: AES-CBC, keysize: 256, PRF: SHA256, Hash: SHA256, DH Grp:14, Auth sign: PSK, Auth verify: PSK
+      Life/Active Time: 86400/32545 sec
+      CE id: 1156, Session-id: 141
+      Local spi: E99229818F7EF5EB       Remote spi: FA434BF0F1020BEE
+
+ IPv6 Crypto IKEv2  SA
